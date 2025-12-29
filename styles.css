@@ -119,6 +119,33 @@ section {
   margin-bottom: 1.5rem;
 }
 
+.status-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.8rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 1rem;
+}
+
+.status-line::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--accent-3);
+  box-shadow: 0 0 0 5px rgba(52, 211, 153, 0.15);
+  display: inline-block;
+}
+
+.status-line.offline::before {
+  background: #fbbf24;
+  box-shadow: 0 0 0 5px rgba(251, 191, 36, 0.18);
+}
+
 .primary,
 .ghost,
 .toggle-btn {

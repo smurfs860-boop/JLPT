@@ -8,10 +8,14 @@ A single-page website that helps you practice for JLPT N3 with:
 
 ## Run locally
 
-No build tools required. From the repository root run a simple server and open the site:
+1. Install dependencies (consider a virtual environment):
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Start the backend API and static site:
+   ```bash
+   flask --app app run --debug
+   ```
+3. Visit [http://localhost:5000](http://localhost:5000) in your browser.
 
-```bash
-python -m http.server 8000
-```
-
-Then visit [http://localhost:8000](http://localhost:8000) in your browser.
+The site will use the API for vocabulary, grammar, planner tasks, and a randomized focus set. If the API is unavailable, it falls back to built-in data so the experience still works offline.
