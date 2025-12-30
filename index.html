@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JLPT N3 Study Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Klee+One:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="top-bar">
+      <div class="logo">JLPT N3 Study Hub</div>
+      <nav class="nav-links">
+        <a href="#planner">Planner</a>
+        <a href="#vocab">Vocabulary</a>
+        <a href="#grammar">Grammar</a>
+        <a href="#practice">Practice</a>
+        <a href="#resources">Resources</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-text">
+          <p class="eyebrow">Level Up Your JLPT Skills</p>
+          <h1>
+            Master JLPT N3 with
+            <span class="accent">focused daily sessions</span>
+          </h1>
+          <p class="lede">
+            Track what you’ve practiced, review core vocabulary and grammar, and
+            keep your momentum with quick drills designed for the N3 exam.
+          </p>
+          <div class="hero-actions">
+            <button class="primary" id="start-session">Start a 15‑min session</button>
+            <button class="ghost" id="scroll-to-practice">Jump to practice</button>
+          </div>
+          <div class="status-line" id="data-status">Connecting to study API…</div>
+          <div class="hero-meta">
+            <div class="meta-card">
+              <p class="meta-label">Daily Target</p>
+              <p class="meta-value"><span id="target-minutes">15</span> min</p>
+            </div>
+            <div class="meta-card">
+              <p class="meta-label">Words Reviewed</p>
+              <p class="meta-value"><span id="words-reviewed">0</span>/30</p>
+            </div>
+            <div class="meta-card">
+              <p class="meta-label">Grammar Patterns</p>
+              <p class="meta-value"><span id="grammar-reviewed">0</span>/10</p>
+            </div>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="panel-header">
+            <p>Today’s focus</p>
+            <span class="status-dot"></span>
+          </div>
+          <h2 id="focus-topic">〜たばかり ・ recent actions</h2>
+          <p class="panel-body">
+            Review how to talk about recent actions with 〜たばかり and
+            reinforce with natural examples and quick checks.
+          </p>
+          <ul class="panel-list" id="focus-list"></ul>
+          <p class="panel-note">
+            Tip: Say each sentence aloud to build speed and confidence.
+          </p>
+        </div>
+      </section>
+
+      <section id="planner" class="planner">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Stay Consistent</p>
+            <h2>Quick study planner</h2>
+            <p class="lede">
+              Check off a balanced mix of vocab, grammar, reading, and listening
+              in under 30 minutes.
+            </p>
+          </div>
+          <div class="target-input">
+            <label for="target">Daily minutes</label>
+            <input type="number" id="target" min="5" max="90" value="15" />
+          </div>
+        </div>
+        <div class="planner-grid" id="task-list"></div>
+      </section>
+
+      <section id="vocab" class="vocab">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Core Vocabulary</p>
+            <h2>Everyday N3 words</h2>
+            <p class="lede">
+              Filter by category or part of speech and practice with context.
+            </p>
+          </div>
+          <div class="filters">
+            <input type="search" id="search" placeholder="Search vocabulary…" />
+            <select id="category-filter">
+              <option value="all">All categories</option>
+            </select>
+            <select id="pos-filter">
+              <option value="all">All POS</option>
+              <option value="noun">Noun</option>
+              <option value="verb">Verb</option>
+              <option value="i-adjective">I-adjective</option>
+              <option value="na-adjective">Na-adjective</option>
+              <option value="expression">Expression</option>
+            </select>
+          </div>
+        </div>
+        <div class="vocab-grid" id="vocab-grid"></div>
+      </section>
+
+      <section id="grammar" class="grammar">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Patterns You’ll See Often</p>
+            <h2>Grammar notebook</h2>
+            <p class="lede">
+              Collect the most common N3 structures with concise explanations
+              and examples.
+            </p>
+          </div>
+          <div class="legend">
+            <span class="pill">Usage</span>
+            <span class="pill warning">Nuance</span>
+            <span class="pill info">Example</span>
+          </div>
+        </div>
+        <div class="grammar-list" id="grammar-list"></div>
+      </section>
+
+      <section id="practice" class="practice">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Active Recall</p>
+            <h2>Mini practice</h2>
+            <p class="lede">
+              Flip between vocabulary and grammar prompts. Say the answer aloud
+              before revealing it.
+            </p>
+          </div>
+          <div class="toggle">
+            <button class="toggle-btn active" data-mode="vocab">Vocab</button>
+            <button class="toggle-btn" data-mode="grammar">Grammar</button>
+          </div>
+        </div>
+        <div class="card-stack">
+          <div class="prompt-card">
+            <p class="prompt-label" id="prompt-label">Vocabulary</p>
+            <h3 id="prompt-question">Press “Next prompt” to begin</h3>
+            <p class="prompt-answer" id="prompt-answer">Answer will appear here</p>
+            <div class="prompt-actions">
+              <button class="ghost" id="reveal">Reveal</button>
+              <button class="primary" id="next">Next prompt</button>
+            </div>
+          </div>
+          <div class="streak">
+            <p>Streak</p>
+            <div class="streak-value" id="streak-value">0</div>
+            <p class="streak-note">Increase your streak by answering correctly twice in a row.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="resources" id="resources">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Next Steps</p>
+            <h2>Study pointers</h2>
+            <p class="lede">
+              Use these ideas to practice outside of the app and build exam
+              confidence.
+            </p>
+          </div>
+        </div>
+        <div class="resource-grid">
+          <article class="resource-card">
+            <h3>Listening sprints</h3>
+            <p>
+              Pick one NHK Easy article, listen twice, then shadow-read the first
+              paragraph aloud while glancing only at the kana.
+            </p>
+          </article>
+          <article class="resource-card">
+            <h3>Reading rhythm</h3>
+            <p>
+              Time one page of a graded reader. Note unknown words but don’t stop
+              reading; review them after finishing the page.
+            </p>
+          </article>
+          <article class="resource-card">
+            <h3>Kanji check-ins</h3>
+            <p>
+              Write five kanji from today’s vocab on paper with on’yomi and
+              kun’yomi, then make a short example sentence.
+            </p>
+          </article>
+          <article class="resource-card">
+            <h3>Speaking prompts</h3>
+            <p>
+              Use a timer and describe your day with at least three grammar
+              patterns from this page. Record and play it back to self-check.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>JLPT N3 Study Hub — consistent practice, steady progress.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
