@@ -1,10 +1,9 @@
-import random
+import json
+import os
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from flask import Flask, jsonify, send_from_directory
-
-app = Flask(__name__, static_folder=".", static_url_path="")
-
+ROOT = Path(__file__).resolve().parent
 
 VOCAB = [
     {"word": "慣れる", "reading": "なれる", "meaning": "to get used to", "pos": "verb", "category": "Daily life"},
@@ -128,32 +127,53 @@ FOCUS_IDEAS = [
 ]
 
 
-@app.get("/api/vocab")
-def get_vocab():
-    categories = sorted({item["category"] for item in VOCAB})
-    return jsonify({"items": VOCAB, "categories": categories})
+def json_response(handler: SimpleHTTPRequestHandler, payload: dict) -> None:
+    encoded = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    handler.send_response(200)
+    handler.send_header("Content-Type", "application/json; charset=utf-8")
+    handler.send_header("Content-Length", str(len(encoded)))
+    handler.end_headers()
+    handler.wfile.write(encoded)
 
 
-@app.get("/api/grammar")
-def get_grammar():
-    return jsonify({"items": GRAMMAR})
+class StudyHandler(SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=str(ROOT), **kwargs)
+
+    def do_GET(self):  # noqa: N802  (http.server naming)
+        if self.path == "/api/vocab":
+            categories = sorted({item["category"] for item in VOCAB})
+            json_response(self, {"items": VOCAB, "categories": categories})
+            return
+
+        if self.path == "/api/grammar":
+            json_response(self, {"items": GRAMMAR})
+            return
+
+        if self.path == "/api/tasks":
+            json_response(self, {"items": TASKS})
+            return
+
+        if self.path == "/api/focus":
+            focus_set = FOCUS_IDEAS[0]
+            json_response(self, {"items": focus_set, "topic": focus_set[0]})
+            return
+
+        if self.path == "/":
+            self.path = "/index.html"
+
+        return super().do_GET()
+
+    def log_message(self, fmt, *args):
+        return  # silence default stdout noise
 
 
-@app.get("/api/tasks")
-def get_tasks():
-    return jsonify({"items": TASKS})
-
-
-@app.get("/api/focus")
-def get_focus():
-    focus_set = random.choice(FOCUS_IDEAS)
-    return jsonify({"items": focus_set, "topic": focus_set[0]})
-
-
-@app.get("/")
-def index():
-    return send_from_directory(Path(".").resolve(), "index.html")
+def run_server():
+    port = int(os.getenv("PORT", "5000"))
+    with ThreadingHTTPServer(("0.0.0.0", port), StudyHandler) as httpd:
+        print(f"Serving JLPT N3 Study Hub at http://localhost:{port}")
+        httpd.serve_forever()
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    run_server()
